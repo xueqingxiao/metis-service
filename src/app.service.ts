@@ -250,6 +250,7 @@ export class AppService {
     const proxy = process.env.QUOTAGUARDSTATIC_URL
       ? url.parse(process.env.QUOTAGUARDSTATIC_URL)
       : undefined;
+    const [username, password] = (proxy?.auth ?? '').split(':');
     const {
       data: { access_token: accessToken },
     } = await axios.get<{ access_token: string }>(
@@ -261,6 +262,11 @@ export class AppService {
           ? {
               host: proxy.hostname,
               port: parseInt(proxy.port),
+              protocol: proxy.protocol,
+              auth: {
+                username,
+                password,
+              },
             }
           : undefined,
       },
@@ -268,6 +274,7 @@ export class AppService {
     if (!accessToken) {
       Logger.error('can not retrieve WeChat access token.');
     }
+    Logger.log('WeChat access token: ', accessToken);
     return accessToken;
   }
 
@@ -280,6 +287,7 @@ export class AppService {
     if (!ticket) {
       Logger.error('can not retrieve WeChat ticket.');
     }
+    Logger.log('WeChat ticket: ', ticket);
     return ticket;
   }
 
