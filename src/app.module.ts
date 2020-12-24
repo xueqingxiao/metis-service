@@ -15,7 +15,10 @@ const __PROD__ = process.env.NODE_ENV === 'production';
     }),
     RedisModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        url: configService.get('REDIS_URL'),
+        host: configService.get('REDIS_HOST'),
+        port: parseInt(configService.get('REDIS_PORT')),
+        password: configService.get('REDIS_PASSWORD'),
+        tls: {}
       }),
       inject: [ConfigService],
     }),
