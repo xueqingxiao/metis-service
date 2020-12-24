@@ -253,6 +253,9 @@ export class AppService {
         'WE_CHAT_APP_ID',
       )}&secret=${this.configService.get('WE_CHAT_APP_SECRET')}`,
     );
+    if (!accessToken) {
+      Logger.error('can not retrieve WeChat access token.');
+    }
     return accessToken;
   }
 
@@ -262,6 +265,9 @@ export class AppService {
     } = await axios.get<{ ticket: string }>(
       `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${token}&type=jsapi`,
     );
+    if (!ticket) {
+      Logger.error('can not retrieve WeChat ticket.');
+    }
     return ticket;
   }
 
