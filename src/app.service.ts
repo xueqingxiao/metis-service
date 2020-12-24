@@ -259,7 +259,7 @@ export class AppService {
       {
         proxy: proxy
           ? {
-              host: proxy.host,
+              host: proxy.hostname,
               port: parseInt(proxy.port),
             }
           : undefined,
