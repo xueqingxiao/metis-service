@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import url from 'url';
 import { RtcTokenBuilder, RtcRole } from 'agora-access-token';
 import { RedisService } from 'nestjs-redis';
 import md5 = require('js-md5');
@@ -246,12 +247,19 @@ export class AppService {
   }
 
   private async retrieveWeChatAccessToken(): Promise<string> {
+    const proxy = url.parse(process.env.QUOTAGUARDSTATIC_URL);
     const {
       data: { access_token: accessToken },
     } = await axios.get<{ access_token: string }>(
       `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=${this.configService.get(
         'WE_CHAT_APP_ID',
       )}&secret=${this.configService.get('WE_CHAT_APP_SECRET')}`,
+      {
+        proxy: {
+          host: proxy.host,
+          port: parseInt(proxy.port),
+        },
+      },
     );
     if (!accessToken) {
       Logger.error('can not retrieve WeChat access token.');
