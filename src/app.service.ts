@@ -247,7 +247,9 @@ export class AppService {
   }
 
   private async retrieveWeChatAccessToken(): Promise<string> {
-    const proxy = url.parse(process.env.QUOTAGUARDSTATIC_URL ?? '');
+    const proxy = process.env.QUOTAGUARDSTATIC_URL
+      ? url.parse(process.env.QUOTAGUARDSTATIC_URL)
+      : undefined;
     const {
       data: { access_token: accessToken },
     } = await axios.get<{ access_token: string }>(
@@ -255,10 +257,12 @@ export class AppService {
         'WE_CHAT_APP_ID',
       )}&secret=${this.configService.get('WE_CHAT_APP_SECRET')}`,
       {
-        proxy: {
-          host: proxy.host,
-          port: parseInt(proxy.port),
-        },
+        proxy: proxy
+          ? {
+              host: proxy.host,
+              port: parseInt(proxy.port),
+            }
+          : undefined,
       },
     );
     if (!accessToken) {
