@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import url from 'url';
+import * as url from 'url';
 import { RtcTokenBuilder, RtcRole } from 'agora-access-token';
 import { RedisService } from 'nestjs-redis';
 import md5 = require('js-md5');
@@ -247,7 +247,7 @@ export class AppService {
   }
 
   private async retrieveWeChatAccessToken(): Promise<string> {
-    const proxy = url.parse(process.env.QUOTAGUARDSTATIC_URL);
+    const proxy = url.parse(process.env.QUOTAGUARDSTATIC_URL ?? '');
     const {
       data: { access_token: accessToken },
     } = await axios.get<{ access_token: string }>(
